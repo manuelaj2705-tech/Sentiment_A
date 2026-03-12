@@ -3,6 +3,13 @@ import pandas as pd
 import streamlit as st
 from PIL import Image
 from googletrans import Translator
+from streamlit_lottie import st_lottie 
+import json 
+
+
+with oper ("graficos.json") as sourse:
+    animation=json.load (sourse)
+  st.lottie ( animation,width =350)
 
 st.title('Análisis de Sentimiento')
 image = Image.open('Lizard Lizard Lizard Meme Sticker.jpg')
