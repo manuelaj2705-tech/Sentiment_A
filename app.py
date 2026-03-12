@@ -7,7 +7,7 @@ from streamlit_lottie import st_lottie
 import json 
 
 
-with oper ("graficos.json") as sourse:
+with oper ("graficos.json.gif") as sourse:
     animation=json.load (sourse)
   st.lottie ( animation,width =350)
 
