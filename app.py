@@ -3,46 +3,58 @@ import pandas as pd
 import streamlit as st
 from PIL import Image
 from googletrans import Translator
-from streamlit_lottie import st_lottie 
-import json 
+from streamlit_lottie import st_lottie
+import json
 
+# -------- CARGAR ANIMACIÓN LOTTIE --------
+with open("loading.json", "r") as source:
+    animation = json.load(source)
 
-with oper ("loading.json") as sourse:
-    animation=json.load (sourse)
-  st.lottie ( animation,width =350)
+st_lottie(animation, width=350)
 
+# -------- TITULO --------
 st.title('Análisis de Sentimiento')
+
+# -------- IMAGEN --------
 image = Image.open('Lizard Lizard Lizard Meme Sticker.jpg')
 st.image(image)
+
 st.subheader("Por favor escribe en el campo de texto la frase que deseas analizar")
 
 translator = Translator()
 
+# -------- SIDEBAR --------
 with st.sidebar:
-               st.subheader("Polaridad y Subjetividad")
-               ("""
-                Polaridad: Indica si el sentimiento expresado en el texto es positivo, negativo o neutral. 
-                Su valor oscila entre -1 (muy negativo) y 1 (muy positivo), con 0 representando un sentimiento neutral.
-                
-               Subjetividad: Mide cuánto del contenido es subjetivo (opiniones, emociones, creencias) frente a objetivo
-               (hechos). Va de 0 a 1, donde 0 es completamente objetivo y 1 es completamente subjetivo.
+    st.subheader("Polaridad y Subjetividad")
+    st.write("""
+Polaridad: Indica si el sentimiento expresado en el texto es positivo, negativo o neutral. 
+Su valor oscila entre -1 (muy negativo) y 1 (muy positivo), con 0 representando un sentimiento neutral.
 
-                 """
-               ) 
+Subjetividad: Mide cuánto del contenido es subjetivo (opiniones, emociones, creencias) frente a objetivo
+(hechos). Va de 0 a 1, donde 0 es completamente objetivo y 1 es completamente subjetivo.
+""")
 
+# -------- ANALIZAR TEXTO --------
 with st.expander('Analizar texto'):
-    text = st.text_input('Escribe por favor: ')
-    if text:
+    text = st.text_input('Escribe por favor:')
 
+    if text:
         translation = translator.translate(text, src="es", dest="en")
         trans_text = translation.text
+
         blob = TextBlob(trans_text)
-        st.write('Polarity: ', round(blob.sentiment.polarity,2))
-        st.write('Subjectivity: ', round(blob.sentiment.subjectivity,2))
-        x=round(blob.sentiment.polarity,2)
-        if x >= 0.0 and x <=1.0:
-            st.write( 'Es un sentimiento Positivo 😊')
-        elif x >=-1 and x <= 0:
-            st.write( 'Es un sentimiento Negativo 😔')
+
+        polarity = round(blob.sentiment.polarity, 2)
+        subjectivity = round(blob.sentiment.subjectivity, 2)
+
+        st.write('Polarity:', polarity)
+        st.write('Subjectivity:', subjectivity)
+
+        if polarity > 0:
+            st.success('Es un sentimiento Positivo 😊')
+
+        elif polarity < 0:
+            st.error('Es un sentimiento Negativo 😔')
+
         else:
-            st.write( 'Es un sentimiento Neutral 😐')
+            st.info('Es un sentimiento Neutral 😐')
