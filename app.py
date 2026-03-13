@@ -5,12 +5,11 @@ from PIL import Image
 from googletrans import Translator
 from streamlit_lottie import st_lottie
 import json
+import time
 
 # -------- CARGAR ANIMACIÓN LOTTIE --------
 with open("loading.json", "r") as source:
     animation = json.load(source)
-
-st_lottie(animation, width=350)
 
 # -------- TITULO --------
 st.title('Análisis de Sentimiento')
@@ -38,14 +37,20 @@ Subjetividad: Mide cuánto del contenido es subjetivo (opiniones, emociones, cre
 with st.expander('Analizar texto'):
     text = st.text_input('Escribe por favor:')
 
-    if text:
-        translation = translator.translate(text, src="es", dest="en")
-        trans_text = translation.text
+    if st.button("Analizar sentimiento"):
 
-        blob = TextBlob(trans_text)
+        # -------- LOADING --------
+        with st.spinner("Analizando sentimiento..."):
+            st_lottie(animation, width=200)
+            time.sleep(2)
 
-        polarity = round(blob.sentiment.polarity, 2)
-        subjectivity = round(blob.sentiment.subjectivity, 2)
+            translation = translator.translate(text, src="es", dest="en")
+            trans_text = translation.text
+
+            blob = TextBlob(trans_text)
+
+            polarity = round(blob.sentiment.polarity, 2)
+            subjectivity = round(blob.sentiment.subjectivity, 2)
 
         st.write('Polarity:', polarity)
         st.write('Subjectivity:', subjectivity)
